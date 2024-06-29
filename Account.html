@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account</title>
+    <style>
+        header{
+            width: 100%;
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
+            font-size: 24px;
+        }
+        nav a{
+            margin: 0 15px;
+            text-decoration: none;
+            color: #333;
+        }
+        button{
+            margin-top: 42px;
+            margin-left: 310px;
+            font-family: "Times New Roman", Times, serif;
+        }
+        input{
+            padding: 10px;
+            margin-left: 300px;
+            margin-bottom: 10px;
+            font-size: 32px;
+            font-family: "Times New Roman", Times, serif;
+            border: none;
+            outline: none;
+            width: 900px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="CreatePost.html">Create</a>
+            <a href="ViewPost.html">View</a>
+            <a href="Account.html">Account</a>
+        </nav>
+    </header>
+    <div style = "margin: 100px;"></div>
+    <form autocomplete = "off" onsubmit = "CreateUser(event)">
+        <input type = "text" id = "username" placeholder="Username" required>
+        <input type = "text" id = "password" placeholder="Password" required>
+        <button type = "submit">Login</button>
+    </form>
+    <script>
+        async function CreateUser(){
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const payload = { 
+                Username: username,
+                Password: password
+            };
+            try {
+                const response = await fetch('https://tom4znmjdf.execute-api.us-west-1.amazonaws.com/CreateUser', {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Account created successfully!');
+                    localStorage.setItem('Username', username);
+                    localStorage.setItem('Password', password);
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while creating your account.');
+            }
+        }
+    </script>
+</body>
+</html>
