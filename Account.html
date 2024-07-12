@@ -6,14 +6,14 @@
     <title>Account</title>
     <style>
         header{
-            width: 100%;
-            padding: 10px 0;
+            width: 95%;
+            padding: 20px;
             display: flex;
             justify-content: center;
             font-size: 24px;
         }
         nav a{
-            margin: 0 15px;
+            margin: 20px;
             text-decoration: none;
             color: #333;
         }
@@ -21,6 +21,9 @@
             font-family: "Times New Roman", Times, serif;
             margin-top: 42px;
             margin-left: 310px;
+            background-color: white;
+            border-radius: 12px;
+            font-size: 16px;
         }
         input{
             font-family: "Times New Roman", Times, serif;
@@ -49,17 +52,22 @@
         </nav>
     </header>
     <div style = "margin: 100px;"></div>
-    <form autocomplete = "off" onsubmit = "CreateUser(event)">
+    <form id = "Login" autocomplete = "off" onsubmit = "CreateUser(event)">
         <input type = "text" id = "username" placeholder="Username" required>
         <input type = "text" id = "password" placeholder="Password" required>
         <button type = "submit">Login</button>
     </form>
     <p id = "CurrentLogin"></p>
+    <button id = "Logout" onclick = "Logout()" style = "display: none">Logout</button>
     <script>
         function ShowCurrentLogin(){
             const username = localStorage.getItem('Username');
+            const login = document.getElementById('Login');
+            const logout = document.getElementById('Logout');
             if(username && username.trim() !== ""){
                 const currentLogin = document.getElementById('CurrentLogin');
+                login.style.display = 'none';
+                logout.style.display = 'block';
                 currentLogin.textContent = "You are currently logged in as " + username;
             }
         }
@@ -81,7 +89,7 @@
                 });
                 const data = await response.json();
                 if (response.ok) {
-                    alert('Account created successfully!');
+                    alert('Logged in successfully!');
                     localStorage.setItem('Username', username);
                     localStorage.setItem('Password', password);
                     ShowCurrentLogin();
@@ -90,8 +98,20 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while creating your account.');
+                alert('An error occurred while logging in.');
             }
+        }
+        function Logout(){
+            const login = document.getElementById('Login');
+            const logout = document.getElementById('Logout');
+            localStorage.setItem('Username', "");
+            localStorage.setItem('Password', "");
+            login.style.display = 'block';
+            logout.style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            const currentLogin = document.getElementById('CurrentLogin');
+            currentLogin.textContent = "";
         }
         ShowCurrentLogin();
     </script>
