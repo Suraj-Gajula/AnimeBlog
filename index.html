@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About</title>
     <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
         header{
             width: 95%;
             padding: 20px;
@@ -29,6 +33,15 @@
         #Body{
             font-size: 24px;
         }
+        .footer {
+            background-color: #222; 
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
     </style>
 </head>
 <body>
@@ -42,9 +55,12 @@
     </header>
     <div id = "about">
     <p id = "Title">About AnimeBlog</p>
-    <p id = "Body">AnimeBlog is a website for posting and reading literary analyses about anime and manga.</p>
-    <p id = "Body">This site is a work in progress. If you have any suggestions please 
+    <p id = "Body">AnimeBlog is a website for posting and reading literary analyses about anime and manga.
+        This site is a work in progress. If you have any suggestions please 
         <a href="https://mail.google.com/mail/?view=cm&fs=1&to=contactanimeblog@gmail.com" target="_blank">send me an email.</a></p>
     </div>
+    <footer class="footer">
+        &copy; 2024 AnimeBlog. All rights reserved.
+    </footer>
 </body>
 </html>

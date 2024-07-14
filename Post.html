@@ -17,19 +17,33 @@
             justify-content: center;
             font-size: 24px;
         }
-        body{
+        p{
             font-family: "Times New Roman", Times, serif;
-            margin-left: 300px;
+            margin-left: 310px;
             width: 900px;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+        .footer {
+            background-color: #222; 
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
         }
         #postTitle{
             font-size: 32px;
         }
-        #postInf0{
-            font-size: 24px;
+        #postInfo{
+            font-size: 20px;
         }
         #postContent{
             font-size: 24px;
+            white-space: pre-wrap;
         }
     </style>
 </head>
@@ -42,9 +56,14 @@
             <a href="Account.html">Account</a>
         </nav>
     </header>
+    <div style = "margin: 100px;"></div>
     <p id="postTitle"></p>
     <p id="postInfo"></p>
     <p id="postContent"></p>
+    <div style = "margin: 100px;"></div>
+    <footer class="footer">
+        &copy; 2024 AnimeBlog. All rights reserved.
+    </footer>
     <script>
         async function fetchPost() {
             const urlParams = new URLSearchParams(window.location.search);

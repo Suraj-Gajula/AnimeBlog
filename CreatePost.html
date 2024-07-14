@@ -30,24 +30,50 @@
             outline: none;
             font-family: "Times New Roman", Times, serif;
             line-height: 2;
+            white-space: pre-wrap;
+            resize: vertical; 
+            overflow: auto;
         }
         button{
             margin-left: 310px;
             font-family: "Times New Roman", Times, serif;
-            margin-bottom: 200px;
             background-color: white;
             border-radius: 12px;
             font-size: 16px;
+            border-width: 1px;
         }
         input{
             padding: 10px;
             margin-left: 300px;
-            margin-top: 100px;
             font-size: 32px;
             font-family: "Times New Roman", Times, serif;
             border: none;
             outline: none;
             width: 900px;
+        }
+        button:hover {
+            background-color: #f0f0f0; 
+        }
+        button:active {
+            background-color: #848484; 
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+        .footer {
+            background-color: #222; 
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        #error{
+            font-family: "Times New Roman", Times, serif;
+            color: red;
+            margin-left: 310px;
         }
     </style>
 </head>
@@ -60,22 +86,48 @@
             <a href="Account.html">Account</a>
         </nav>
     </header>
-    <form autocomplete = "off" onsubmit = "CreatePost(event)">
+    <div style = "margin: 100px;"></div>
+    <form id = 'form' autocomplete = "off" onsubmit = "CreatePost(event)">
         <input type = "text" id = "title" placeholder="Paper Title" autocomplete="off" required>
         <textarea  autocomplete = "off" id = "body" placeholder = "Start typing your paper here..." required></textarea>
-        <button type = "submit">Post</button>
+        <button id = 'button' type = "submit">Post</button>
     </form>
+    <p id = "error"></p>
+    <div style = "margin: 100px;"></div>
+    <footer class="footer">
+        &copy; 2024 AnimeBlog. All rights reserved.
+    </footer>
     <script>
+        const errortext = document.getElementById('error');
+        const button = document.getElementById('error')
         textarea = document.querySelector("#body");
         textarea.addEventListener('input', autoResize, false);
         function autoResize() {
-            this.style.height = 'auto';
             this.style.height = this.scrollHeight + 'px';
+        }
+        function AccountExists(){
+            const form = document.getElementById('form');
+            if(localStorage.getItem('Username') == ''){
+                form.style.display = 'none';
+                errortext.textContent = "Please create or log in to your account first."
+            }
+            else{
+                errortext.textContent = "";
+            }
         }
         async function CreatePost(){
             event.preventDefault();
+            button.disabled = true;
             const title = document.getElementById('title').value;
+            if (title.trim().split(/\s+/).length < 5) {
+                errortext.textContent = 'The body title be at least 5 words long.';
+                return;
+            }
             const body = document.getElementById('body').value;
+            if (body.trim().split(/\s+/).length < 1000) {
+                errortext.textContent = 'The body must be at least 1000 words long.';
+                return;
+            }
             const unformatteddate = new Date();
             const month = String(unformatteddate.getMonth() + 1).padStart(2, '0');
             const day = String(unformatteddate.getDate()).padStart(2, '0');
@@ -100,15 +152,18 @@
                 });
                 const data = await response.json();
                 if (response.ok) {
-                    alert('Paper created successfully!');
+                    errortext.textContent = '';
+                    location.href = 'ViewPost.html';
                 } else {
-                    alert('Error: ' + data.error);
+                    errortext.textContent = data.error;
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while creating your paper.');
+                errortext.textContent = 'An error occurred while creating your paper.';
             }
+            button.disabled = false;
         }
+        AccountExists()
     </script>
 </body>
 </html>

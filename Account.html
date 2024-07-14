@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account</title>
     <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+        .footer {
+            background-color: #222; 
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
         header{
             width: 95%;
             padding: 20px;
@@ -23,6 +36,7 @@
             margin-left: 310px;
             background-color: white;
             border-radius: 12px;
+            border-width: 1px;
             font-size: 16px;
         }
         input{
@@ -39,6 +53,16 @@
             font-family: "Times New Roman", Times, serif;
             font-size: 24px;
             margin-left: 310px;
+        }
+        button:hover {
+            background-color: #f0f0f0; 
+        }
+        button:active {
+            background-color: #848484; 
+        }
+        #error{
+            margin-left: 310px;
+            color: red;
         }
     </style>
 </head>
@@ -59,7 +83,12 @@
     </form>
     <p id = "CurrentLogin"></p>
     <button id = "Logout" onclick = "Logout()" style = "display: none">Logout</button>
+    <p id = "error"></p>
+    <footer class="footer">
+        &copy; 2024 AnimeBlog. All rights reserved.
+    </footer>
     <script>
+        const errortext = document.getElementById('error');
         function ShowCurrentLogin(){
             const username = localStorage.getItem('Username');
             const login = document.getElementById('Login');
@@ -89,16 +118,16 @@
                 });
                 const data = await response.json();
                 if (response.ok) {
-                    alert('Logged in successfully!');
                     localStorage.setItem('Username', username);
                     localStorage.setItem('Password', password);
+                    errortext.textContent = ''
                     ShowCurrentLogin();
                 } else {
-                    alert('Error: ' + data.error);
+                    errortext.textContent = data.error
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while logging in.');
+                errortext.textContent = 'An error occurred while logging in.';
             }
         }
         function Logout(){
@@ -110,6 +139,8 @@
             logout.style.display = 'none';
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
+            localStorage.setItem('Username', '');
+            localStorage.setItem('Password', '');
             const currentLogin = document.getElementById('CurrentLogin');
             currentLogin.textContent = "";
         }
