@@ -10,7 +10,7 @@
             padding: 0;
         }
         .footer {
-            background-color: #222; 
+            background-color: #000000; 
             color: #fff;
             text-align: center;
             padding: 20px;
@@ -25,17 +25,27 @@
             justify-content: center;
             font-size: 24px;
         }
-        nav a{
-            margin: 20px;
+        nav a {
+            margin: 30px;
             text-decoration: none;
-            color: #333;
+            color: #000000;
+        }
+        nav a span{
+            position: relative;
+            top: -1px;
+        }
+        img {
+            height: 20px; 
+            cursor: pointer; 
+            margin-right: 10px;
         }
         button{
             font-family: "Times New Roman", Times, serif;
             margin-top: 42px;
+            margin-bottom: 42px;
             margin-left: 310px;
             background-color: white;
-            border-radius: 12px;
+            border-radius: 10px;
             border-width: 1px;
             font-size: 16px;
         }
@@ -60,19 +70,39 @@
         button:active {
             background-color: #848484; 
         }
-        #error{
+        p {
             margin-left: 310px;
-            color: red;
+            font-size: 24px;
+        }
+        .post-item{
+            margin-top: 50px;
+            margin-left: 310px;
+            width: 900px;
+            font-family: "Times New Roman", Times, serif;
+            margin-bottom: 20px;
+            cursor: pointer;
+            padding-bottom: 10px;
+        }
+        .post-title{
+            font-size: 32px;
+        }
+        .post-author-date{
+            font-size: 24px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .post-item:hover{
+            background-color: #f0f0f0;
         }
     </style>
 </head>
 <body>
     <header>
         <nav>
-            <a href="index.html">Home</a>
-            <a href="CreatePost.html">Create</a>
-            <a href="ViewPost.html">View</a>
-            <a href="Account.html">Account</a>
+            <a href="index.html"><img src="Home.png" loading="lazy"><span>Home</span></a>
+            <a href="CreatePost.html"><img src="Create.png" loading="lazy"><span>Create</span></a>
+            <a href="ViewPost.html"><img src = "View.png" loading="lazy"><span>View</span></a>
+            <a href="Account.html"><img src = "Account.png" loading="lazy"><span>Account</span></a>
         </nav>
     </header>
     <div style = "margin: 100px;"></div>
@@ -84,6 +114,8 @@
     <p id = "CurrentLogin"></p>
     <button id = "Logout" onclick = "Logout()" style = "display: none">Logout</button>
     <p id = "error"></p>
+    <p id = "yourPosts">Your Posts:</p>
+    <div id="yourPostList"></div>
     <footer class="footer">
         &copy; 2024 AnimeBlog. All rights reserved.
     </footer>
@@ -98,6 +130,7 @@
                 login.style.display = 'none';
                 logout.style.display = 'block';
                 currentLogin.textContent = "You are currently logged in as " + username;
+                fetchPosts();
             }
         }
         async function CreateUser(){
@@ -143,6 +176,59 @@
             localStorage.setItem('Password', '');
             const currentLogin = document.getElementById('CurrentLogin');
             currentLogin.textContent = "";
+            const postList = document.getElementById('yourPostList');
+            const postText = document.getElementById('yourPosts');
+            postText.textContent = ''; 
+            postList.innerHTML = ''; 
+        }
+        async function fetchPosts(){
+            const postText = document.getElementById('yourPosts');
+            postText.textContent = 'Your Posts:'; 
+            const username = localStorage.getItem('Username');
+            const password = localStorage.getItem('Password');
+            const payload2 = { 
+                Username: username,
+                Password: password
+            };
+            try {
+                const response = await fetch('https://tom4znmjdf.execute-api.us-west-1.amazonaws.com/GetYourPostList', {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(payload2)
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    errortext.textContent = errorData.error;
+                    throw new Error(errorData.error);
+                }
+                const posts = await response.json();
+                const postList = document.getElementById('yourPostList');
+                postList.innerHTML = ''; 
+                posts.forEach(post => {
+                    const postItem = document.createElement('div');
+                    postItem.className = 'post-item';
+                    postItem.dataset.title = post.Title.toLowerCase();
+                    postItem.dataset.author = post.Author.toLowerCase();
+                    postItem.dataset.date = post.Date.toLowerCase();
+                    const postTitle = document.createElement('div');
+                    postTitle.className = 'post-title';
+                    postTitle.textContent = post.Title;
+                    const postInfo = document.createElement('div');
+                    postInfo.className = 'post-author-date';
+                    postInfo.textContent = `${post.Author} ${post.Date}`;
+                    postItem.appendChild(postTitle);
+                    postItem.appendChild(postInfo);
+                    postItem.onclick = () => {
+                        window.location.href = `Post.html?title=${encodeURIComponent(post.Title)}`;
+                    };
+                    postList.appendChild(postItem);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                errortext.textContent = "There was an error getting your posts."
+            }
         }
         ShowCurrentLogin();
     </script>
