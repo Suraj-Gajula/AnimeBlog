@@ -105,7 +105,7 @@
         }
         function AccountExists(){
             const form = document.getElementById('form');
-            if(localStorage.getItem('Username') == ''){
+            if(localStorage.getItem('Username') == '' || localStorage.getItem('Username') == null){
                 form.style.display = 'none';
                 errortext.textContent = "Please create or log in to your account first."
             }
