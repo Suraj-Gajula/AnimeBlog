@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <title>Post</title>
     <style>
         nav a {
@@ -36,15 +37,6 @@
             margin: 0;
             padding: 0;
         }
-        .footer {
-            background-color: #000000; 
-            color: #fff;
-            text-align: center;
-            padding: 20px;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
         #postTitle{
             font-size: 32px;
         }
@@ -54,6 +46,25 @@
         #postContent{
             font-size: 24px;
             white-space: pre-wrap;
+        }
+        button{
+            font-family: "Times New Roman", Times, serif;
+            margin-top: 42px;
+            margin-bottom: 15px;
+            margin-left: 310px;
+            background-color: white;
+            border-radius: 10px;
+            border-width: 1px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #f0f0f0; 
+        }
+        button:active {
+            background-color: #848484; 
+        }
+        #citeButton{
+            margin-left: 20px;
         }
     </style>
 </head>
@@ -66,15 +77,50 @@
             <a href="Account.html"><img src = "Account.png" loading="lazy"><span>Account</span></a>
         </nav>
     </header>
-    <div style = "margin: 100px;"></div>
+    <button id="downloadPdfBtn">Download PDF</button>
+    <button id="citeButton">Cite Paper</button>
     <p id="postTitle"></p>
     <p id="postInfo"></p>
     <p id="postContent"></p>
     <div style = "margin: 100px;"></div>
-    <footer class="footer">
-        &copy; 2024 AnimeBlog. All rights reserved.
-    </footer>
     <script>
+        document.getElementById('citeButton').addEventListener('click', function() {
+            let textToCopy = document.getElementById('postInfo').textContent;
+            textToCopy = textToCopy.split(" by ");
+            textToCopy = textToCopy[1].trim() + ". \"" + document.getElementById('postTitle').textContent + ".\" AnimeBlog, " 
+            + textToCopy[0].replace("Date: ", "").trim() + ", " + window.location.href;
+            navigator.clipboard.writeText(textToCopy);
+        });
+        window.jsPDF = window.jspdf.jsPDF;
+        function downloadPDF() {
+            const doc = new jsPDF();
+            const title = document.getElementById('postTitle').textContent;
+            const info = document.getElementById('postInfo').textContent;
+            const content = document.getElementById('postContent').textContent;
+            doc.setFont("Times New Roman");
+            const maxWidth = 170;
+            const margin = 20;
+            const lineHeight = 10;
+            let y = 40; 
+            const pageHeight = doc.internal.pageSize.height;
+            const titleY = 15;
+            doc.setFontSize(20);
+            doc.text(title, margin, titleY, { maxWidth });
+            doc.setFontSize(8);
+            doc.text(info, margin, titleY + 10, { maxWidth });
+            doc.setFontSize(12);
+            const lines = doc.splitTextToSize(content, maxWidth);
+            lines.forEach((line, index) => {
+                if (y + lineHeight > pageHeight - margin) {
+                    doc.addPage();
+                    y = margin; 
+                }
+                doc.text(line, margin, y);
+                y += lineHeight;
+            });
+            doc.save(`${title}.pdf`);
+        }       
+        document.getElementById('downloadPdfBtn').addEventListener('click', downloadPDF);
         async function fetchPost() {
             const urlParams = new URLSearchParams(window.location.search);
             const title = urlParams.get('title');
