@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create</title>
     <style>
-        header{
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: "Times New Roman", Times, serif;
+        }
+        header {
             width: 97.3%;
             padding: 20px;
             display: flex;
@@ -13,12 +18,19 @@
             font-size: 24px;
             border-bottom: 1px solid rgba(132, 132, 132, 0.5);
         }
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
         nav a {
-            margin: 30px;
+            margin: 10px 40px;
             text-decoration: none;
             color: #000000;
+            display: flex;
+            align-items: center;
         }
-        nav a span{
+        nav a span {
             position: relative;
             top: -1px;
         }
@@ -27,39 +39,37 @@
             cursor: pointer; 
             margin-right: 10px;
         }
-        textarea{
-            margin-left: 300px;
-            width: 900px;
-            height: 116px;
+        input, textarea {
+            width: 90%;
+            max-width: 900px;
+            margin: 10px auto;
+            display: block;
             padding: 10px;
             box-sizing: border-box;
-            font-size: 24px;
-            border: none;
-            border-radius: 4px;
-            resize: none;
-            outline: none;
             font-family: "Times New Roman", Times, serif;
-            line-height: 2;
-            white-space: pre-wrap;
+            border-radius: 4px;
+            border: 1px solid rgba(132, 132, 132, 0.5);
+        }
+        input {
+            font-size: 32px;
+        }
+        textarea {
+            font-size: 24px;
             resize: vertical; 
             overflow: auto;
+            line-height: 1.5;
+            height: 150px;
         }
-        button{
-            margin-left: 310px;
+        button {
             font-family: "Times New Roman", Times, serif;
+            margin-top: 42px;
+            margin-bottom: 15px;
+            width: 10%;
+            max-width: 900px;
             background-color: white;
             border-radius: 10px;
             font-size: 16px;
-            border-width: 1px;
-        }
-        input{
-            padding: 10px;
-            margin-left: 300px;
-            font-size: 32px;
-            font-family: "Times New Roman", Times, serif;
-            border: none;
-            outline: none;
-            width: 900px;
+            border: 1px solid rgba(132, 132, 132, 0.5);
         }
         button:hover {
             background-color: #f0f0f0; 
@@ -67,14 +77,30 @@
         button:active {
             background-color: #848484; 
         }
-        body, html {
-            margin: 0;
-            padding: 0;
-        }
-        #error{
+        #error {
             font-family: "Times New Roman", Times, serif;
-            margin-left: 310px;
             font-size: 24px;
+            color: rgb(0, 0, 0);
+            margin-top: 45px;
+            margin-left: 20px;
+        }
+        .button-container {
+            margin-left: 20%;
+            display: flex;
+        }
+        @media (max-width: 600px) {
+            header {
+                font-size: 20px;
+            }
+            nav a {
+                margin: 5px 20px;
+            }
+            input {
+                font-size: 24px;
+            }
+            textarea {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
@@ -83,18 +109,20 @@
         <nav>
             <a href="index.html"><img src="Home.png" loading="lazy"><span>Home</span></a>
             <a href="CreatePost.html"><img src="Create.png" loading="lazy"><span>Create</span></a>
-            <a href="ViewPost.html"><img src = "View.png" loading="lazy"><span>View</span></a>
-            <a href="Account.html"><img src = "Account.png" loading="lazy"><span>Account</span></a>
+            <a href="ViewPost.html"><img src="View.png" loading="lazy"><span>View</span></a>
+            <a href="Account.html"><img src="Account.png" loading="lazy"><span>Account</span></a>
         </nav>
     </header>
-    <div style = "margin: 100px;"></div>
-    <form id = 'form' autocomplete = "off" onsubmit = "CreatePost(event)">
-        <input type = "text" id = "title" placeholder="Paper Title" autocomplete="off" required>
-        <textarea  autocomplete = "off" id = "body" placeholder = "Start typing your paper here..." required></textarea>
-        <button id = 'button' type = "submit">Post</button>
+    <div style="margin: 100px;"></div>
+    <form id='form' autocomplete="off" onsubmit="CreatePost(event)">
+        <input type="text" id="title" placeholder="Paper Title" autocomplete="off" required>
+        <textarea id="body" placeholder="Start typing your paper here..." required></textarea>
+        <div class = "button-container">
+            <button id='button' type="submit">Post</button>
+            <p id="error"></p>
+        </div>
     </form>
-    <p id = "error"></p>
-    <div style = "margin: 100px;"></div>
+    <div style="margin: 50px;"></div>
     <script>
         const errortext = document.getElementById('error');
         const button = document.getElementById('error')
@@ -117,15 +145,7 @@
             event.preventDefault();
             button.disabled = true;
             const title = document.getElementById('title').value;
-            if (title.trim().split(/\s+/).length < 5) {
-                errortext.textContent = 'The title must be at least 5 words long.';
-                return;
-            }
             const body = document.getElementById('body').value;
-            if (body.trim().split(/\s+/).length < 500) {
-                errortext.textContent = 'The body must be at least 500 words long.';
-                return;
-            }
             const unformatteddate = new Date();
             const month = String(unformatteddate.getMonth() + 1).padStart(2, '0');
             const day = String(unformatteddate.getDate()).padStart(2, '0');
